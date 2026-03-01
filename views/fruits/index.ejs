@@ -10,8 +10,12 @@
     <h1>All Fruits</h1>
     <ul>
         <% fruits.forEach(fruit => { %>
-            <li style="color: <%= fruit.color %>;"><%= fruit.name %></li>
-        <% }) %>
-    </ul>
+            <a href="/fruits/<%= fruit._id %>">
+                <li style="color: <%= fruit.color %>;"><%= fruit.name %></li>
+            </a>
+            <% }) %>
+        </ul>
+
+    <button onclick="window.history.back()">Go Back</button>
 </body>
 </html>

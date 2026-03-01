@@ -47,6 +47,17 @@ app.get("/fruits/new", (req, res) => {
   res.render("fruits/new.ejs");
 });
 
+// Delete - Delete /fruits/:fruitId - delete some fruits based on the param passed
+app.delete("/fruits/:fruitId", async (req, res) => {
+  try {
+    // Find the fruit in the database with the id from the url params and delete it, then redirect back to the index page
+    await Fruit.findByIdAndDelete(req.params.fruitId);
+    res.redirect("/fruits");
+  } catch (error) {
+    res.json({err: error.message});
+  }
+});
+
 // Create - POST /fruits - take data from fruits/new form and add a new fruit to the database
 app.post("/fruits", async (req, res) => {
   try {
@@ -54,7 +65,16 @@ app.post("/fruits", async (req, res) => {
     const {name, color} = req.body;
     // If I trim the name and color and they are falsy (empty string, null, undefined) then throw an error
     if (!name.trim() || !color.trim()) 
-      throw new Error("Name and color are required fields, please click back and try again");
+      return res.render("/fruits/new.ejs", {
+    message: "Name and color fields cannot be empty, please try again",
+  })
+
+    if(description && description.length > 100) {
+      return res.render("/fruits/new.ejs", {
+        message: "Description cannot be longer than 100 characters, please try again",
+      });
+    }
+
     // Handle input checkbox for isReadyToEat - if it's on, set to true, otherwise false
     req.body.isReadyToEat = req.body.isReadyToEat === "on" ? true : false;
     // Give the form data to the model.create to make a new mongodb document
@@ -63,7 +83,7 @@ app.post("/fruits", async (req, res) => {
     res.redirect("/fruits");
 
   } catch (error) {
-    res.json({err: error.message});
+    res.render("error.ejs", {message: error.message});
   }
 });
 
@@ -75,9 +95,13 @@ app.get("/fruits/:fruitId", async (req, res) => {
     const foundFruit = await Fruit.findById(req.params.fruitId);
     // If no fruit is found, throw a manual error to be caught by the catch block
     if (!foundFruit) throw new Error("Failed to find that fruit, please click back and try again");
-    res.json(foundFruit);
+
+    res.render("fruits/show.ejs", {
+      fruit: foundFruit,
+      isReadyToEatMessage: foundFruit.isReadyToEat ? `The ${foundFruit.name} is ready to eat!` : `The ${foundFruit.name} is not ready to eat yet!`
+    });
   } catch (error) {
-    res.json({err: error.message});
+    res.render("error.ejs", {err: error.message});
   }
 });
 
