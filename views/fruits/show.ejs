@@ -11,6 +11,14 @@
     <p>Color: <%= fruit.color %></p>
     <p><%= isReadyToEatMessage %></p>
 
+    <form action="/fruits/<%= fruit._id %>?_method=DELETE" method="POST">
+        <button type="submit">Delete <%= fruit.name %></button>
+    </form>
+
+    <form action="/fruits/<%= fruit._id %>/soft?_method=DELETE" method="POST">
+        <button type="submit">Soft Delete <%= fruit.name %></button>
+    </form>
+
     <button onclick="window.history.back()">Go Back</button>
 </body>
 </html>
