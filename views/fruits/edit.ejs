@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit A Fruit</title>
+</head>
+<body>
+    <%- include('../partials/_navbar.ejs') %>
+    <h1>Editing the <%= fruit.name %></h1>
+    <form action="/fruits/<%= fruit._id %>?_method=PUT" method="POST">
+        <% if(typeof(message) !== "undefined") { %>
+            <strong><em>
+            <p style="color: red;"><%= message %></p>
+            </em></strong>
+        <% } %>
+
+        <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required value="<%= fruit.name %>" />
+        </div>
+
+        <div>
+        <label for="description">Description:</label>
+        <textarea 
+        name="description" 
+        id="description"
+        placeholder="Please enter a description of 100 characters or less."
+        maxlength="100"
+        type="text"
+        required
+        ><%= fruit.description %></textarea>
+        </div>
+
+        <div class="checkbox-div">
+        <label for="isReadyToEat">Ready to Eat?</label>
+        <input type="checkbox" name="isReadyToEat" id="isReadyToEat" <%= fruit.isReadyToEat ? "checked" : "" %> />
+        </div>
+
+        <div>
+        <label for="color">Color:</label>
+        <input type="text" name="color" id="color" required value="<%= fruit.color %>" />
+        </div>
+        <button type="submit">Update Fruit</button>
+    </form>
+
+    <a class="fruits-index-link" href="/fruits">
+        <div class="index-link-text">Back to Fruits</div>
+    </a>
+
+</body>
+</html>

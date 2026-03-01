@@ -7,12 +7,17 @@
 </head>
 <body>
     <%- include('../partials/_navbar.ejs') %>
+    <div class="index-header-div">
     <h1>All Fruits</h1>
+    <a class="add-fruit" href="/fruits/new">Add Fruit</a>
+    </div>
     <ul>
         <% fruits.forEach(fruit => { %>
-            <a href="/fruits/<%= fruit._id %>">
-                <li style="color: <%= fruit.color %>;"><%= fruit.name %></li>
-            </a>
+            <li>
+                <a class="fruits-cards" href="/fruits/<%= fruit._id %>">
+                <%= fruit.name %>
+                </a>
+            </li>
             <% }) %>
         </ul>
 

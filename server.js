@@ -4,7 +4,7 @@ dotenv.config(); // Loads the environment variables from .env file
 require("./db/connection.js"); // connect to the database
 
 const Fruit = require("./models/fruit.js");
-
+const morgan = require("morgan"); // require morgan package for logging
 const express = require('express');
 
 const app = express();
@@ -14,6 +14,8 @@ app.use(methodOverride("_method")); // override with POST having ?_method=DELETE
 
 app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 app.use(express.json()); // for parsing application/json
+app.use(morgan("tiny")); // log every request to the console
+app.use(express.static("public")); // serve static files from the public folder
 
 // Routes
 // Landing Page
@@ -26,9 +28,9 @@ app.get("/", async (req, res) => {
 // **Index - GET /fruits - get all the fruits and send back a page
 // **New - GET /fruits/new - send a form page to create a new fruit
 // **Delete - Delete /fruits/:fruitId - delete some fruits based on the param passed
-// Update - PUT /fruits/:fruitId - update some fruits based on the param passwed and req.body
+// **Update - PUT /fruits/:fruitId - update some fruits based on the param passwed and req.body
 // **Create - POST /fruits - take data from fruits/new form and add a new fruit to the database
-// Edit - GET /fruits/:fruitId/edit - edit a specific fruit
+// **Edit - GET /fruits/:fruitId/edit - edit a specific fruit
 // **Show - GET /fruits/:fruitId - show one specific fruit
 
 // Extra routes not part of RESTful convention:
@@ -58,6 +60,19 @@ app.delete("/fruits/:fruitId", async (req, res) => {
     // Find the fruit in the database with the id from the url params and delete it, then redirect back to the index page
     await Fruit.findByIdAndDelete(req.params.fruitId);
     res.redirect("/fruits");
+  } catch (error) {
+    res.render("error.ejs", {message: error.message});
+  }
+});
+
+// Update - PUT /fruits/:fruitId - update some fruits based on the param passwed and req.body
+app.put("/fruits/:fruitId", async (req, res) => {
+  try {
+    // Find the fruit in the database with the id from the url params and update it with the data from req.body, then redirect back to the index page
+    // Handle input checkbox for isReadyToEat - if it's on, set to true, otherwise false
+    req.body.isReadyToEat = req.body.isReadyToEat === "on";
+    await Fruit.findByIdAndUpdate(req.params.fruitId, req.body);
+    res.redirect(`/fruits/${req.params.fruitId}`);
   } catch (error) {
     res.render("error.ejs", {message: error.message});
   }
@@ -112,6 +127,22 @@ app.get("/fruits/:fruitId/confirm_delete", async (req, res) => {
     if (!foundFruit) throw new Error("Failed to find that fruit, please click back and try again");
 
     res.render("fruits/fruit_confirm_delete.ejs", {
+      fruit: foundFruit,
+    });
+  } catch (error) {
+    res.render("error.ejs", {message: error.message});
+  }
+});
+
+// Edit - GET /fruits/:fruitId/edit - edit a specific fruit
+app.get("/fruits/:fruitId/edit", async (req, res) => {
+  try {
+    // Find the fruit in the database with the id from the url params and send it to the show.ejs page as a variable called fruit
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    // If no fruit is found, throw a manual error to be caught by the catch block
+    if (!foundFruit) throw new Error("Failed to find that fruit, please click back and try again");
+
+    res.render("fruits/edit.ejs", {
       fruit: foundFruit,
     });
   } catch (error) {

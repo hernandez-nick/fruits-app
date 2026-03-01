@@ -9,9 +9,11 @@
     <%- include('../partials/_navbar.ejs') %>
     <h1>Confirm Delete</h1>
     <p>Are you sure you want to delete the fruit: <em style="color: <%= fruit.color %>;"><%= fruit.name %></em>?</p>
-    <form action="/fruits/<%= fruit._id %>?_method=DELETE" method="POST">
-        <button type="submit">Yes, Delete <%= fruit.name %></button>
+    <div class="fruit-actions">
+    <form class="delete-form" action="/fruits/<%= fruit._id %>?_method=DELETE" method="POST">
+        <button class="delete-button" type="submit">Delete <%= fruit.name %></button>
     </form>
+</div>
     <button onclick="window.history.back()">No, Go Back</button>
 </body>
 </html>

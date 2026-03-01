@@ -10,15 +10,26 @@
     <h1>The <em style="color: <%= fruit.color %>;"><%= fruit.name %></em> Page</h1>
     <p>Color: <%= fruit.color %></p>
     <p><%= isReadyToEatMessage %></p>
+    <p>Description: <%= fruit.description %></p>
 
-    <form action="/fruits/<%= fruit._id %>?_method=DELETE" method="POST">
-        <button type="submit">Delete <%= fruit.name %></button>
-    </form>
+<div class="fruit-actions"></div>
+    <a class="edit-link" href="/fruits/<%= fruit._id %>/edit">
+        <button class="edit-text">Edit <%= fruit.name %></button>
+    </a>
+
+    <a href="/fruits/<%= fruit._id %>/confirm_delete">
+        <button type="submit"> Delete <%= fruit.name %></button>
+    </a>
 
     <form action="/fruits/<%= fruit._id %>/soft?_method=DELETE" method="POST">
         <button type="submit">Soft Delete <%= fruit.name %></button>
     </form>
+</div>
+<div class="fruit-details"></div>
 
-    <button onclick="window.history.back()">Go Back</button>
+    <a class="fruits-index-link" href="/fruits">
+        <div class="index-link-text">Back to Fruits</div>
+    </a>
+
 </body>
 </html>
