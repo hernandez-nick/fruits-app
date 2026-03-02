@@ -62,8 +62,8 @@ router.put("/fruits/:fruitId", async (req, res) => {
   }
 });
 
-// Soft Delete - Delete /fruits/:fruitId - delete some fruits based on the param passed
-router.delete("/fruits/:fruitId", async (req, res) => {
+// Soft Delete - Delete /fruits/:fruitId/soft - mark a fruit as soft deleted
+router.delete("/fruits/:fruitId/soft", async (req, res) => {
   try {
     // Find the fruit in the database with the id from the url params and soft delete it, then redirect back to the index page
     await Fruit.findByIdAndUpdate(req.params.fruitId, {isSoftDeleted: true});
